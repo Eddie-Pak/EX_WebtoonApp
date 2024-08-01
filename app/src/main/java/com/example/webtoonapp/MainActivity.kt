@@ -29,4 +29,17 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+    override fun onBackPressed() {
+        val currentFragment = supportFragmentManager.fragments[0]
+        if (currentFragment is WebViewFragment) {
+            if (currentFragment.canGoBack()) {
+                currentFragment.goBack()
+            } else {
+                super.onBackPressed()
+            }
+        } else {
+            super.onBackPressed()
+        }
+    }
 }
