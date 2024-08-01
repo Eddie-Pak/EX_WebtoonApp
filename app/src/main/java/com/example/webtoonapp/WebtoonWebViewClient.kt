@@ -8,8 +8,19 @@ import android.webkit.WebViewClient
 import android.widget.ProgressBar
 import androidx.core.view.isVisible
 
-class WebtoonWebViewClient(private val progressBar: ProgressBar): WebViewClient() {
+class WebtoonWebViewClient(
+    private val progressBar: ProgressBar,
+    private val saveData: (String) -> Unit
+): WebViewClient() {
 
+
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+        // https://comic.naver.com/webtoon/detail?titleId=769209&no=68&week=wed
+        if (request != null && request.url.toString().contains("comic.naver.com/webtoon/detail")) {
+            saveData(request.url.toString())
+        }
+        return super.shouldOverrideUrlLoading(view, request)
+    }
     override fun onPageFinished(view: WebView?, url: String?) {
         super.onPageFinished(view, url)
 
