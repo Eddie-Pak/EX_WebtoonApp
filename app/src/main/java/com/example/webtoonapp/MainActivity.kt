@@ -2,9 +2,12 @@ package com.example.webtoonapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.TextView
 import com.example.webtoonapp.databinding.ActivityMainBinding
+import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -14,24 +17,23 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.button1.setOnClickListener {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.fragmentContainer, WebViewFragment())
-                commit()
-            }
-        }
+        binding.viewPager.adapter = ViewPagerAdapter(this)
 
-        binding.button2.setOnClickListener {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.fragmentContainer, BFragment())
-                commit()
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            run {
+                val textView = TextView(this@MainActivity)
+                textView.text = "CH $position"
+                textView.gravity = Gravity.CENTER
+
+                tab.customView = textView
+//                tab.text = "position $position"
             }
-        }
+        }.attach()
 
     }
 
     override fun onBackPressed() {
-        val currentFragment = supportFragmentManager.fragments[0]
+        val currentFragment = supportFragmentManager.fragments[binding.viewPager.currentItem]
         if (currentFragment is WebViewFragment) {
             if (currentFragment.canGoBack()) {
                 currentFragment.goBack()
